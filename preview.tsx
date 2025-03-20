@@ -728,7 +728,7 @@ export default function KamianiKaraniPreview() {
           <img
             src="/down.svg"
             alt="Scroll down"
-            className="h-10 w-10 rightness-0 invert"
+            className="h-10 w-10 rightness-0 invert items-center"
           />
         </motion.div>
       </section>
