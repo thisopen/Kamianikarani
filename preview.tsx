@@ -890,7 +890,7 @@ ${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
         </motion.div>
 
         <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 animate-bounce z-50"
+          className="absolute bottom-10 left-0 right-0 flex justify-center items-center text-gray-500 animate-bounce z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 1 }}
@@ -1329,14 +1329,14 @@ ${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
                 {language === "ru" ? "Ваша корзина пуста" : "Your cart is empty"}
               </p>
             ) : (
-              <>
-                <div className="flex flex-wrap gap-4 max-h-[50vh] overflow-y-auto mb-6 pr-2">
+              <div className="max-h-[80vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent md:scrollbar-none md:overflow-x-hidden">
+                <div className="flex flex-wrap gap-4 mb-6">
                   {cartItems.map((item, index) => (
                     <div
                       key={`${item.id}-${index}`}
-                      className="flex-shrink-0 w-[calc(33.333%-1rem)] bg-black/30 p-3 rounded-lg"
+                      className="flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-black/30 p-3 rounded-lg"
                     >
-                      <div className="flex flex-col">
+                      <div className="flex flex-col md:flex-col">
                         <div className="w-full h-[120px] bg-white/10 rounded-md overflow-hidden mb-3">
                           <img
                             src={item.image || "/placeholder.svg"}
@@ -1417,7 +1417,7 @@ ${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="city" className="block text-white mb-2">
                         {language === "ru" ? "Город" : "City"}
@@ -1444,6 +1444,8 @@ ${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
                         required
                       />
                     </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label htmlFor="house" className="block text-white mb-2">
                         {language === "ru" ? "Дом" : "House"}
@@ -1500,15 +1502,17 @@ ${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
                       ? "Нажимая кнопку 'Отправить заказ', вы даете согласие на обработку ваших персональных данных."
                       : "By clicking 'Submit Order', you consent to the processing of your personal data."}
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50"
-                  >
-                    {isSubmitting ? t.sending : language === "ru" ? "Отправить заказ" : "Submit Order"}
-                  </button>
+                  <div className="sticky bottom-0 bg-black/40 backdrop-blur-sm -mx-6 px-6 py-4">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 text-sm md:text-base"
+                    >
+                      {isSubmitting ? t.sending : language === "ru" ? "Отправить заказ" : "Submit Order"}
+                    </button>
+                  </div>
                 </form>
-              </>
+              </div>
             )}
           </div>
         </div>
