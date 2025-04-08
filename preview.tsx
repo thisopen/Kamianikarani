@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import emailjs from "@emailjs/browser"
+import { Metadata } from "next"
+import Head from "next/head"
+import Image from "next/image"
+import Lightbox from "yet-another-react-lightbox"
+import "yet-another-react-lightbox/styles.css"
+import { useTranslation } from "react-i18next"
 import {
   Language,
   Product,
@@ -19,13 +25,15 @@ import {
   TranslationKeys,
   CategoryTranslationKeys,
 } from "./types"
-import { Metadata } from "next"
-import Head from "next/head"
 
 // Добавляем импорт шрифта
 const senBold = {
   fontFamily: "Sen-Bold",
   src: `url('/fonts/Sen-Bold.ttf') format('truetype')`,
+}
+
+interface CartItem extends Product {
+  quantity: number;
 }
 
 export default function KamianiKaraniPreview() {
@@ -36,7 +44,7 @@ export default function KamianiKaraniPreview() {
   const [scrollPosition, setScrollPosition] = useState(0)
   const [language, setLanguage] = useState<Language>("ru")
   const productContainerRef = useRef<HTMLDivElement>(null)
-  const [cartItems, setCartItems] = useState<Product[]>([])
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
   const cartIconRef = useRef<HTMLButtonElement>(null)
   const [showCookieConsent, setShowCookieConsent] = useState(true)
@@ -50,7 +58,12 @@ export default function KamianiKaraniPreview() {
 
   // Инициализируем EmailJS
   useEffect(() => {
-    emailjs.init("kmBEvr-hVFjlHtPlI")
+    try {
+      emailjs.init("kmBEvr-hVFjlHtPlI")
+      console.log("EmailJS initialized successfully")
+    } catch (error) {
+      console.error("Failed to initialize EmailJS:", error)
+    }
   }, [])
 
   useEffect(() => {
@@ -144,153 +157,117 @@ export default function KamianiKaraniPreview() {
   }
 
   // Product translations
-  const productTranslations: Record<Language, Record<string, { title: string; description: string }>> = {
+  const productTranslations: Record<Language, Record<string, { title: string }>> = {
     ru: {
       ring1: {
         title: 'Кольцо "Песок"',
-        description: "Изящное кольцо с текстурой песка",
       },
       ring2: {
         title: 'Кольцо "Волна"',
-        description: "Кольцо с волнообразным дизайном",
       },
       ring3: {
         title: 'Кольцо "Натура"',
-        description: "Кольцо, вдохновленное природными формами",
       },
       ring4: {
         title: 'Кольцо "Форест"',
-        description: "Кольцо с мотивами лесной тематики",
       },
       ring5: {
         title: 'Кольцо "Море"',
-        description: "Кольцо с мотивами морской стихии",
       },
       earring1: {
         title: 'Серьги "Геометрия"',
-        description: "Минималистичные серьги геометрической формы",
       },
       earring2: {
         title: 'Серьги "Лес"',
-        description: "Серьги, вдохновленные лесными мотивами",
       },
       earring3: {
         title: 'Серьги "Минимал"',
-        description: "Минималистичные серьги для повседневного образа",
       },
       pendant1: {
         title: 'Подвеска "Треугольник"',
-        description: "Геометрическая подвеска в форме треугольника",
       },
       pendant2: {
         title: 'Подвеска "Капля"',
-        description: "Элегантная подвеска в форме капли",
       },
       pendant3: {
         title: 'Подвеска "Лист"',
-        description: "Подвеска в форме листа",
       },
       table1: {
         title: 'Стол "Натура"',
-        description: "Стол из натурального дерева с уникальным дизайном",
       },
       table2: {
         title: 'Стол "Река"',
-        description: "Стол с элементами эпоксидной смолы",
       },
       lamp1: {
         title: 'Лампа "Ветви"',
-        description: "Дизайнерская лампа в форме ветвей дерева",
       },
       lamp2: {
         title: 'Лампа "Геометрия"',
-        description: "Лампа с геометрическим дизайном",
       },
       poster1: {
         title: 'Постер "Линии"',
-        description: "Минималистичный постер с абстрактными линиями",
       },
       poster2: {
         title: 'Постер "Круги"',
-        description: "Постер с геометрическими кругами",
       },
       poster3: {
         title: 'Постер "Геометрия"',
-        description: "Постер с геометрическими формами",
       },
     },
     en: {
       ring1: {
         title: 'Ring "Sand"',
-        description: "Elegant ring with sand texture",
       },
       ring2: {
         title: 'Ring "Wave"',
-        description: "Ring with wave-like design",
       },
       ring3: {
         title: 'Ring "Nature"',
-        description: "Ring inspired by natural forms",
       },
       ring4: {
         title: 'Ring "Forest"',
-        description: "Ring with forest-themed motifs",
       },
       ring5: {
         title: 'Ring "Sea"',
-        description: "Ring with sea-themed motifs",
       },
       earring1: {
         title: 'Earrings "Geometry"',
-        description: "Minimalist earrings with geometric shape",
       },
       earring2: {
         title: 'Earrings "Forest"',
-        description: "Earrings inspired by forest motifs",
       },
       earring3: {
         title: 'Earrings "Minimal"',
-        description: "Minimalist earrings for everyday look",
       },
       pendant1: {
         title: 'Pendant "Triangle"',
-        description: "Geometric pendant in the shape of a triangle",
       },
       pendant2: {
         title: 'Pendant "Drop"',
-        description: "Elegant pendant in the shape of a drop",
       },
       pendant3: {
         title: 'Pendant "Leaf"',
-        description: "Pendant in the shape of a leaf",
       },
       table1: {
         title: 'Table "Nature"',
-        description: "Table made of natural wood with unique design",
       },
       table2: {
         title: 'Table "River"',
-        description: "Table with epoxy resin elements",
       },
       lamp1: {
         title: 'Lamp "Branches"',
-        description: "Designer lamp in the shape of tree branches",
       },
       lamp2: {
         title: 'Lamp "Geometry"',
-        description: "Lamp with geometric design",
       },
       poster1: {
         title: 'Poster "Lines"',
-        description: "Minimalist poster with abstract lines",
       },
       poster2: {
         title: 'Poster "Circles"',
-        description: "Poster with geometric circles",
       },
       poster3: {
         title: 'Poster "Geometry"',
-        description: "Poster with geometric shapes",
       },
     },
   }
@@ -369,55 +346,220 @@ export default function KamianiKaraniPreview() {
   // Base product structure
   const baseProducts: BaseProducts = {
     rings: [
-      { id: "ring1", image: "/ring/ring_product_1.png?height=300&width=300" },
-      { id: "ring2", image: "/ring/ring_product_2.jpg?height=300&width=300" },
-      { id: "ring3", image: "/ring/ring_product_3.png?height=300&width=300" },
-      
-      
+      { 
+        id: "ring1", 
+        image: "/ring/ring_product_1.png?height=300&width=300", 
+        price: "120",
+        material: "Ёлка",
+        size: "16-18",
+        images: [
+          "/ring/ring_product_1.png?height=800&width=800",
+          "/ring/ring_product_1_2.png?height=800&width=800",
+          "/ring/ring_product_1_3.png?height=800&width=800"
+        ]
+      },
+      { 
+        id: "ring2", 
+        image: "/ring/ring_product_2.jpg?height=300&width=300", 
+        price: "150",
+        material: "Дуб",
+        size: "17-19"
+      },
+      { 
+        id: "ring3", 
+        image: "/ring/ring_product_3.png?height=300&width=300", 
+        price: "180",
+        material: "Тик",
+        size: "16-18"
+      },
+      { 
+        id: "ring4", 
+        image: "/ring/ring_product_4.png?height=300&width=300", 
+        price: "200",
+        material: "Ёлка",
+        size: "18-20"
+      },
+      { 
+        id: "ring5", 
+        image: "/ring/ring_product_5.png?height=300&width=300", 
+        price: "250",
+        material: "Дуб",
+        size: "17-19"
+      },
     ],
     earrings: [
-      { id: "earring1", image: "/earring/earring_product_1.jpg?height=300&width=300" },
-      { id: "earring2", image: "/earring/earring_product_2.jpg?height=300&width=300" },
-      { id: "earring3", image: "/earring/earring_product_3.png?height=300&width=300" },
-      { id: "earring4", image: "/earring/earring_product_4.png?height=300&width=300" },
-      { id: "earring5", image: "/earring/earring_product_5.jpg?height=300&width=300" },
-      { id: "earring6", image: "/earring/earring_product_6.jpg?height=300&width=300" },
-      { id: "earring7", image: "/earring/earring_product_7.jpg?height=300&width=300" },
-      { id: "earring8", image: "/earring/earring_product_8.jpg?height=300&width=300" },
-      { id: "earring9", image: "/earring/earring_product_9.jpg?height=300&width=300" },
-      { id: "earring10", image: "/earring/earring_product_10.jpg?height=300&width=300" },
-      { id: "earring11", image: "/earring/earring_product_11.jpg?height=300&width=300" },
-      { id: "earring12", image: "/earring/earring_product_12.jpg?height=300&width=300" },
-      { id: "earring13", image: "/earring/earring_product_13.jpg?height=300&width=300" },
-      { id: "earring14", image: "/earring/earring_product_14.jpg?height=300&width=300" },
-      { id: "earring15", image: "/earring/earring_product_15.jpg?height=300&width=300" },
-      { id: "earring16", image: "/earring/earring_product_16.jpg?height=300&width=300" },
-      { id: "earring17", image: "/earring/earring_product_17.jpg?height=300&width=300" },
-      { id: "earring18", image: "/earring/earring_product_18.jpg?height=300&width=300" },
-      { id: "earring19", image: "/earring/earring_product_19.jpg?height=300&width=300" },
-      { id: "earring20", image: "/earring/earring_product_20.jpg?height=300&width=300" },
-      { id: "earring21", image: "/earring/earring_product_21.jpg?height=300&width=300" },
-      { id: "earring22", image: "/earring/earring_product_22.jpg?height=300&width=300" },
-      { id: "earring23", image: "/earring/earring_product_23.jpg?height=300&width=300" },
-      { id: "earring24", image: "/earring/earring_product_24.jpg?height=300&width=300" },
+      { 
+        id: "earring1", 
+        image: "/earring/earring_product_1.jpg?height=300&width=300", 
+        price: "100",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring2", 
+        image: "/earring/earring_product_2.jpg?height=300&width=300", 
+        price: "130",
+        material: "Дуб"
+      },
+      { 
+        id: "earring3", 
+        image: "/earring/earring_product_3.png?height=300&width=300", 
+        price: "160",
+        material: "Тик"
+      },
+      { 
+        id: "earring4", 
+        image: "/earring/earring_product_4.png?height=300&width=300", 
+        price: "190",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring5", 
+        image: "/earring/earring_product_5.jpg?height=300&width=300", 
+        price: "220",
+        material: "Дуб"
+      },
+      { 
+        id: "earring6", 
+        image: "/earring/earring_product_6.jpg?height=300&width=300", 
+        price: "250",
+        material: "Тик"
+      },
+      { 
+        id: "earring7", 
+        image: "/earring/earring_product_7.jpg?height=300&width=300", 
+        price: "280",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring8", 
+        image: "/earring/earring_product_8.png?height=300&width=300", 
+        price: "300",
+        material: "Дуб"
+      },
+      { 
+        id: "earring9", 
+        image: "/earring/earring_product_9.jpg?height=300&width=300", 
+        price: "320",
+        material: "Тик"
+      },
+      { 
+        id: "earring10", 
+        image: "/earring/earring_product_10.jpg?height=300&width=300", 
+        price: "350",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring11", 
+        image: "/earring/earring_product_11.jpg?height=300&width=300", 
+        price: "400",
+        material: "Дуб"
+      },
+      { 
+        id: "earring12", 
+        image: "/earring/earring_product_12.jpg?height=300&width=300", 
+        price: "430",
+        material: "Тик"
+      },
+      { 
+        id: "earring13", 
+        image: "/earring/earring_product_13.png?height=300&width=300", 
+        price: "460",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring14", 
+        image: "/earring/earring_product_14.jpg?height=300&width=300", 
+        price: "490",
+        material: "Дуб"
+      },
+      { 
+        id: "earring15", 
+        image: "/earring/earring_product_15.jpg?height=300&width=300", 
+        price: "520",
+        material: "Тик"
+      },
+      { 
+        id: "earring16", 
+        image: "/earring/earring_product_16.jpg?height=300&width=300", 
+        price: "550",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring17", 
+        image: "/earring/earring_product_17.jpg?height=300&width=300", 
+        price: "580",
+        material: "Дуб"
+      },
+      { 
+        id: "earring18", 
+        image: "/earring/earring_product_18.jpg?height=300&width=300", 
+        price: "610",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring19", 
+        image: "/earring/earring_product_19.jpg?height=300&width=300", 
+        price: "640",
+        material: "Дуб"
+      },
+      { 
+        id: "earring20", 
+        image: "/earring/earring_product_20.jpg?height=300&width=300", 
+        price: "670",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring21", 
+        image: "/earring/earring_product_21.jpg?height=300&width=300", 
+        price: "700",
+        material: "Дуб"
+      },
+      { 
+        id: "earring22", 
+        image: "/earring/earring_product_22.jpg?height=300&width=300", 
+        price: "730",
+        material: "Ёлка"
+      },
+      { 
+        id: "earring23", 
+        image: "/earring/earring_product_23.jpg?height=300&width=300", 
+        price: "760",
+        material: "Дуб"
+      },
+      { 
+        id: "earring24", 
+        image: "/earring/earring_product_24.jpg?height=300&width=300", 
+        price: "790",
+        material: "Ёлка"
+      },
     ],
     pendants: [
-      { id: "pendant1", image: "/pendant/pendant_product_1.jpg?height=300&width=300" },
-      { id: "pendant2", image: "/pendant/pendant_product_2.jpg?height=300&width=300" },
-      
+      { id: "pendant1", image: "/pendant/pendant_product_1.jpg?height=300&width=300", price: "200", material: "Дуб" },
+      { id: "pendant2", image: "/pendant/pendant_product_2.jpg?height=300&width=300", price: "220", material: "Тик" },
+      { id: "pendant3", image: "/pendant/pendant_product_3.png?height=300&width=300", price: "240", material: "Ёлка" },
+      { id: "pendant4", image: "/pendant/pendant_product_4.png?height=300&width=300", price: "260", material: "Дуб" },
+      { id: "pendant5", image: "/pendant/pendant_product_5.jpg?height=300&width=300", price: "280", material: "Тик" },
     ],
     tables: [
-      { id: "table1", image: "/table/table_product_1.jpg?height=300&width=300" },
-      
+      { id: "table1", image: "/table/table_product_1.jpg?height=300&width=300", price: "500", material: "Дуб" },
+      { id: "table2", image: "/table/table_product_2.jpg?height=300&width=300", price: "550", material: "Тик" },
+      { id: "table3", image: "/table/table_product_3.png?height=300&width=300", price: "600", material: "Ёлка" },
+      { id: "table4", image: "/table/table_product_4.png?height=300&width=300", price: "650", material: "Дуб" },
+      { id: "table5", image: "/table/table_product_5.jpg?height=300&width=300", price: "700", material: "Тик" },
     ],
     lamps: [
-      { id: "lamp1", image: "/lamp/lamp_product_1.jpg?height=300&width=300" },
-      { id: "lamp2", image: "/lamp/lamp_product_2.png?height=300&width=300" },
+      { id: "lamp1", image: "/lamp/lamp_product_1.jpg?height=300&width=300", price: "250", material: "Ёлка" },
+      { id: "lamp2", image: "/lamp/lamp_product_2.jpg?height=300&width=300", price: "280", material: "Дуб" },
+      { id: "lamp3", image: "/lamp/lamp_product_3.png?height=300&width=300", price: "310", material: "Тик" },
+      { id: "lamp4", image: "/lamp/lamp_product_4.png?height=300&width=300", price: "340", material: "Ёлка" },
+      { id: "lamp5", image: "/lamp/lamp_product_5.jpg?height=300&width=300", price: "370", material: "Дуб" },
     ],
     posters: [
-      { id: "poster1", image: "/poster/poster_product_1.jpg?height=300&width=300" },
-      { id: "poster2", image: "/poster/poster_product_2.jpg?height=300&width=300" },
-      { id: "poster3", image: "/poster/poster_product_3.jpg?height=300&width=300" },
+      { id: "poster1", image: "/poster/poster_product_1.jpg?height=300&width=300", price: "100", material: "Бумага" },
+      { id: "poster2", image: "/poster/poster_product_2.jpg?height=300&width=300", price: "120", material: "Бумага" },
+      { id: "poster3", image: "/poster/poster_product_3.png?height=300&width=300", price: "140", material: "Бумага" },
+      { id: "poster4", image: "/poster/poster_product_4.png?height=300&width=300", price: "160", material: "Бумага" },
+      { id: "poster5", image: "/poster/poster_product_5.jpg?height=300&width=300", price: "180", material: "Бумага" },
     ],
   }
 
@@ -426,7 +568,6 @@ export default function KamianiKaraniPreview() {
     acc[category] = baseProducts[category].map((product) => ({
       ...product,
       title: productTranslations[language][product.id]?.title || "Неизвестный товар",
-      description: productTranslations[language][product.id]?.description || "Описание отсутствует",
     }))
     return acc
   }, {})
@@ -550,51 +691,93 @@ export default function KamianiKaraniPreview() {
     setShowCart(false)
   }
 
-  const handleSubmitOrder = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const email = (e.target as HTMLFormElement).email.value
-    const comment = (e.target as HTMLFormElement).comment.value
+    try {
+      const form = e.target as HTMLFormElement
+      const name = form.elements.namedItem('name') as HTMLInputElement
+      const email = form.elements.namedItem('email') as HTMLInputElement
+      const city = form.elements.namedItem('city') as HTMLInputElement
+      const street = form.elements.namedItem('street') as HTMLInputElement
+      const house = form.elements.namedItem('house') as HTMLInputElement
+      const apartment = form.elements.namedItem('apartment') as HTMLInputElement
+      const postalCode = form.elements.namedItem('postalCode') as HTMLInputElement
+      const comment = form.elements.namedItem('comment') as HTMLTextAreaElement
 
-    // Безопасно обрабатываем товары в корзине
-    const orderDetails = cartItems
-      .filter(item => item && item.id) // Проверяем только наличие id
-      .map((item) => {
-        const quantity = item.quantity || 1
-        const title = item.title || productTranslations[language][item.id]?.title || "Неизвестный товар"
-        return `${title} (${language === "ru" ? "Количество" : "Quantity"}: ${quantity})`
+      console.log("Form data collected:", { 
+        name: name.value,
+        email: email.value,
+        city: city.value,
+        street: street.value,
+        house: house.value,
+        apartment: apartment.value,
+        postalCode: postalCode.value,
+        comment: comment.value
       })
-      .join("\n")
 
-    const templateParams = {
-      from_name: email,
-      message: comment || "Нет комментария",
-      order_details: orderDetails || "Нет товаров в заказе"
-    }
+      const orderDetails = cartItems
+        .filter(item => item && item.id)
+        .map((item) => {
+          const quantity = item.quantity || 1
+          const title = item.title || productTranslations[language][item.id]?.title || "Неизвестный товар"
+          const price = item.price || "0"
+          return `${title} (${language === "ru" ? "Количество" : "Quantity"}: ${quantity}) - $${price}`
+        })
+        .join("\n")
 
-    emailjs.send("kamianikarani@gmail.com", "template_io84qs8", templateParams).then(
-      (response) => {
-        console.log("SUCCESS!", response.status, response.text)
+      console.log("Order details prepared:", orderDetails)
+
+      const templateParams: EmailTemplateParams = {
+        name: name.value,
+        from_name: email.value,
+        order_details: `
+${language === "ru" ? "Детали заказа" : "Order details"}:
+${orderDetails}
+
+${language === "ru" ? "Адрес доставки" : "Delivery address"}:
+${language === "ru" ? "Город" : "City"}: ${city.value}
+${language === "ru" ? "Улица" : "Street"}: ${street.value}
+${language === "ru" ? "Дом" : "House"}: ${house.value}
+${apartment.value ? `${language === "ru" ? "Квартира" : "Apartment"}: ${apartment.value}` : ""}
+${language === "ru" ? "Индекс" : "Postal code"}: ${postalCode.value}`,
+        message: comment.value || (language === "ru" ? "Нет комментария" : "No comment")
+      }
+
+      console.log("Sending email with params:", templateParams)
+
+      const result = await emailjs.send(
+        "kamianikarani@gmail.com", // Service ID
+        "template_io84qs8", // Template ID
+        templateParams,
+        "kmBEvr-hVFjlHtPlI" // Public Key
+      )
+
+      console.log("EmailJS response:", result)
+
+      if (result.status === 200) {
         setNotificationType("success")
         setNotification(t.orderSuccess)
         closeCart()
         setCartItems([])
-        setIsSubmitting(false)
-        setTimeout(() => {
-          setNotification(null)
-        }, 3000)
-      },
-      (error) => {
-        console.log("FAILED...", error)
-        setNotificationType("error")
-        setNotification(t.orderError)
-        setIsSubmitting(false)
-        setTimeout(() => {
-          setNotification(null)
-        }, 3000)
+      } else {
+        throw new Error(`EmailJS вернул статус ${result.status}`)
       }
-    )
+    } catch (error) {
+      console.error("Ошибка отправки заказа:", {
+        error,
+        message: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      setNotificationType("error")
+      setNotification(t.orderError)
+    } finally {
+      setIsSubmitting(false)
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
+    }
   }
 
   const acceptCookies = () => {
@@ -707,20 +890,7 @@ export default function KamianiKaraniPreview() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
-          <a
-            href="#catalog"
-            className="bg-white/20 backdrop-blur-md px-8 py-3 text-white rounded-full font-medium hover:bg-white/30 transition-all duration-300 inline-flex items-center"
-          >
-            {t.viewCatalog}
-          </a>
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 animate-bounce"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 animate-bounce z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 1 }}
@@ -728,7 +898,7 @@ export default function KamianiKaraniPreview() {
           <img
             src="/down.svg"
             alt="Scroll down"
-            className="h-10 w-10 rightness-0 invert items-center"
+            className="h-10 w-10 brightness-0 invert opacity-70 hover:opacity-100 transition-opacity duration-300"
           />
         </motion.div>
       </section>
@@ -920,21 +1090,43 @@ export default function KamianiKaraniPreview() {
                             className="object-cover w-full h-full transition-all duration-500 hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                          <button
-                            className="absolute bottom-2 right-2 bg-white/20 backdrop-blur-md p-2 rounded-full hover:bg-white/40 transition-all z-10"
-                            onClick={(e) => addToCart(product, e)}
-                            aria-label={language === "ru" ? "Добавить в корзину" : "Add to cart"}
-                          >
-                            <img
-                              src="/cart.svg"
-                              alt="Cart Icon"
-                              className="h-5 w-5"
-                            />
-                          </button>
+                          <div className="absolute bottom-2 right-2 flex items-center space-x-2">
+                            <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium">
+                              ${product.price}
+                            </span>
+                            <button
+                              className="bg-white/20 backdrop-blur-md p-2 rounded-full hover:bg-white/40 transition-all z-10"
+                              onClick={(e) => addToCart(product, e)}
+                              aria-label={language === "ru" ? "Добавить в корзину" : "Add to cart"}
+                            >
+                              <img
+                                src="/cart.svg"
+                                alt="Cart Icon"
+                                className="h-5 w-5"
+                              />
+                            </button>
+                          </div>
                         </div>
                         <div className="p-4">
-                          <h3 className="text-lg font-bold text-white mb-1 tracking-wide">{product.title}</h3>
-                          <p className="text-sm text-white/70">{product.description}</p>
+                          <div className="flex justify-between items-center mb-1">
+                            <h3 className="text-white text-lg font-medium leading-tight">{product.title}</h3>
+                            <p className="text-white/60 text-sm leading-tight">
+                              {language === "ru" ? "Материал: " : "Material: "}
+                              {language === "ru" ? product.material : 
+                                product.material === "Дуб" ? "Oak" :
+                                product.material === "Тик" ? "Teak" :
+                                product.material === "Ёлка" ? "Spruce" :
+                                product.material === "Бумага" ? "Paper" :
+                                product.material
+                              }
+                            </p>
+                          </div>
+                          {product.size && (
+                            <p className="text-white/60 text-sm leading-tight text-right">
+                              {language === "ru" ? "Размер: " : "Size: "}
+                              {product.size}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -1109,39 +1301,11 @@ export default function KamianiKaraniPreview() {
 
       {/* Lightbox */}
       {lightboxOpen && selectedProduct && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/80 backdrop-blur-lg"
-          onClick={closeLightbox}
-        >
-          <div
-            className="relative max-w-4xl w-full h-full flex flex-col items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-4 right-4 z-10 text-white rounded-full p-2 hover:bg-white/10 transition-colors"
-              onClick={closeLightbox}
-            >
-              <img
-                src="/cross.svg"
-                alt="Close"
-                className="h-9 w-9 brightness-0 invert"
-              />
-            </button>
-
-            <div className="relative w-full h-[80vh] flex items-center justify-center">
-              <img
-                src={selectedProduct.image || "/placeholder.svg"}
-                alt={selectedProduct.title}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-
-            <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center text-white space-y-2 px-6">
-              <h3 className="text-xl font-bold">{selectedProduct.title}</h3>
-              <p className="text-white/70 text-sm max-w-md text-center">{selectedProduct.description}</p>
-            </div>
-          </div>
-        </div>
+        <Lightbox
+          open={lightboxOpen}
+          close={closeLightbox}
+          slides={selectedProduct.images?.map((image: string) => ({ src: image })) || [{ src: selectedProduct.image }]}
+        />
       )}
       {/* Shopping Cart Modal */}
       {showCart && (
@@ -1166,14 +1330,14 @@ export default function KamianiKaraniPreview() {
               </p>
             ) : (
               <>
-                <div className="space-y-4 max-h-[50vh] overflow-y-auto mb-6">
+                <div className="flex flex-wrap gap-4 max-h-[50vh] overflow-y-auto mb-6 pr-2">
                   {cartItems.map((item, index) => (
                     <div
                       key={`${item.id}-${index}`}
-                      className="flex items-center justify-between bg-black/30 p-3 rounded-lg"
+                      className="flex-shrink-0 w-[calc(33.333%-1rem)] bg-black/30 p-3 rounded-lg"
                     >
-                      <div className="flex items-center">
-                        <div className="w-16 h-16 bg-white/10 rounded-md overflow-hidden mr-4">
+                      <div className="flex flex-col">
+                        <div className="w-full h-[120px] bg-white/10 rounded-md overflow-hidden mb-3">
                           <img
                             src={item.image || "/placeholder.svg"}
                             alt={item.title}
@@ -1181,40 +1345,143 @@ export default function KamianiKaraniPreview() {
                           />
                         </div>
                         <div>
-                          <h3 className="text-white font-medium">{item.title}</h3>
-                          <p className="text-white/60 text-sm">
-                            {language === "ru" ? "Количество: " : "Quantity: "}
-                            {item.quantity || 1}
+                          <p className="text-white font-medium text-sm mb-1 truncate">{item.title}</p>
+                          <p className="text-white/60 text-xs">
+                            {language === "ru" ? "Материал: " : "Material: "}
+                            {item.material}
                           </p>
+                          {item.size && (
+                            <p className="text-white/60 text-xs">
+                              {language === "ru" ? "Размер: " : "Size: "}
+                              {item.size}
+                            </p>
+                          )}
+                          <div className="flex justify-between items-center mt-2">
+                            <p className="text-white/60 text-xs">
+                              {language === "ru" ? "Кол-во: " : "Qty: "}
+                              {item.quantity || 1}
+                            </p>
+                            <p className="text-white font-medium text-sm">
+                              ${(parseInt(item.price) * (item.quantity || 1)).toFixed(2)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="w-full mt-2 text-white/60 hover:text-white/90 transition-colors bg-white/10 hover:bg-white/20 rounded-md py-1 px-2 flex items-center justify-center"
+                          >
+                            <img
+                              src="/bin.svg"
+                              alt="Remove item"
+                              className="h-4 w-4 invert"
+                            />
+                          </button>
                         </div>
                       </div>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-white/60 hover:text-white/90 transition-colors"
-                      >
-                        <img
-                          src="/bin.svg"
-                          alt="Remove item"
-                          className="h-6 w-6 invert"
-                        />
-                      </button>
                     </div>
                   ))}
                 </div>
 
+                <div className="mb-6 p-4 bg-black/30 rounded-lg">
+                  <p className="text-white text-lg font-medium">
+                    {language === "ru" ? "Итого: " : "Total: "}
+                    ${Math.round(cartItems.reduce((total, item) => total + (parseInt(item.price) * (item.quantity || 1)), 0))}
+                  </p>
+                </div>
+
                 <form ref={formRef} className="space-y-4" onSubmit={handleSubmitOrder}>
-                  <div>
-                    <label htmlFor="email" className="block text-white mb-2">
-                      {language === "ru" ? "Email для связи" : "Contact Email"}
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
-                      placeholder={language === "ru" ? "Введите ваш email" : "Enter your email"}
-                      required
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="name" className="block text-white mb-2">
+                        {language === "ru" ? "Имя" : "Name"}
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Введите ваше имя" : "Enter your name"}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-white mb-2">
+                        {language === "ru" ? "Email для связи" : "Contact Email"}
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Введите ваш email" : "Enter your email"}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-5 gap-4">
+                    <div>
+                      <label htmlFor="city" className="block text-white mb-2">
+                        {language === "ru" ? "Город" : "City"}
+                      </label>
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Введите город" : "Enter city"}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="street" className="block text-white mb-2">
+                        {language === "ru" ? "Улица" : "Street"}
+                      </label>
+                      <input
+                        type="text"
+                        id="street"
+                        name="street"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Введите улицу" : "Enter street"}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="house" className="block text-white mb-2">
+                        {language === "ru" ? "Дом" : "House"}
+                      </label>
+                      <input
+                        type="text"
+                        id="house"
+                        name="house"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Номер дома" : "House number"}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="apartment" className="block text-white mb-2">
+                        {language === "ru" ? "Квартира" : "Apartment"}
+                      </label>
+                      <input
+                        type="text"
+                        id="apartment"
+                        name="apartment"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Номер квартиры" : "Apartment number"}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="postalCode" className="block text-white mb-2">
+                        {language === "ru" ? "Индекс" : "Postal Code"}
+                      </label>
+                      <input
+                        type="text"
+                        id="postalCode"
+                        name="postalCode"
+                        className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                        placeholder={language === "ru" ? "Индекс" : "Postal code"}
+                        required
+                      />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="comment" className="block text-white mb-2">
@@ -1223,10 +1490,15 @@ export default function KamianiKaraniPreview() {
                     <textarea
                       id="comment"
                       name="comment"
-                      rows={3}
+                      rows={2}
                       className="w-full bg-white/10 border border-white/20 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                       placeholder={language === "ru" ? "Дополнительная информация" : "Additional information"}
                     ></textarea>
+                  </div>
+                  <div className="text-sm text-white/70 mb-4">
+                    {language === "ru" 
+                      ? "Нажимая кнопку 'Отправить заказ', вы даете согласие на обработку ваших персональных данных."
+                      : "By clicking 'Submit Order', you consent to the processing of your personal data."}
                   </div>
                   <button
                     type="submit"

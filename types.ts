@@ -4,13 +4,20 @@ export interface Product {
   id: string;
   image: string;
   title: string;
-  description: string;
+  material: string;
+  size?: string;
   quantity?: number;
+  price: string;
+  images?: string[];
 }
 
 export interface BaseProduct {
   id: string;
   image: string;
+  price: string;
+  material: string;
+  size?: string;
+  images?: string[];
 }
 
 export interface Products {
@@ -43,9 +50,11 @@ export interface Category {
 }
 
 export interface EmailTemplateParams {
+  name: string;
   from_name: string;
-  message: string;
   order_details: string;
+  message: string;
+  [key: string]: string;
 }
 
 export interface BaseProducts {
